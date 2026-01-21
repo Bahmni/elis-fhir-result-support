@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "http://resources.openmrs.org/doctype/config-1.2.dtd">
+
+<module configVersion="1.2">
+	
+    <id>@MODULE_ID@</id>
+    <name>@MODULE_NAME@</name>
+    <version>@MODULE_VERSION@</version>
+    <package>@MODULE_PACKAGE@</package>
+    <author>Bahmni</author>
+    <description>
+        Module for creating FHIR diagnostic reports from ELIS lab results
+    </description>
+
+    <updateURL>https://example.com/modules/download/elisFhirResultSupport/update.rdf</updateURL>
+
+    <require_version>${openmrsPlatformVersion}</require_version>
+    <require_modules>
+        <require_module>org.openmrs.module.fhir2</require_module>
+        <require_module>org.openmrs.module.webservices.rest</require_module>
+        <require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
+        <require_module>org.bahmni.module.elisatomfeedclient</require_module>
+    </require_modules>
+
+    <messages>
+        <lang>en</lang>
+        <file>messages.properties</file>
+    </messages>
+</module>

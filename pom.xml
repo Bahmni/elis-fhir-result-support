@@ -12,18 +12,18 @@
     <groupId>org.bahmni.module</groupId>
     <artifactId>elis-fhir-result-support</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>ELIS FHIR Result Support</name>
     <description>Module for creating FHIR diagnostic reports from ELIS lab results</description>
 
-    <modules>
-        <module>api</module>
-        <module>omod</module>
-    </modules>
-
     <properties>
         <openmrsPlatformVersion>2.5.12</openmrsPlatformVersion>
-        <openmrs.fhir2.version>2.5.0</openmrs.fhir2.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <MODULE_ID>elisFhirResultSupport</MODULE_ID>
+        <MODULE_NAME>${project.name}</MODULE_NAME>
+        <MODULE_VERSION>${project.version}</MODULE_VERSION>
+        <MODULE_PACKAGE>org.bahmni.module.${MODULE_ID}</MODULE_PACKAGE>
     </properties>
 
     <repositories>
@@ -45,26 +45,82 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.openmrs.api</groupId>
-                <artifactId>openmrs-api</artifactId>
-                <version>${openmrsPlatformVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.openmrs.module</groupId>
-                <artifactId>fhir2-api</artifactId>
-                <version>${openmrs.fhir2.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.bahmni.module</groupId>
-                <artifactId>fhir2addlextension-api</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-                <scope>provided</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.openmrs.maven.plugins</groupId>
+                <artifactId>maven-openmrs-plugin</artifactId>
+                <version>1.0.1</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>init</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>initialize-module</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>pack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package-module</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openmrs.api</groupId>
+            <artifactId>openmrs-api</artifactId>
+            <version>${openmrsPlatformVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>openelis-atomfeed-client-omod</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.17.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>fhir2addlextension-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>fhir2-api</artifactId>
+            <version>2.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
 </project>

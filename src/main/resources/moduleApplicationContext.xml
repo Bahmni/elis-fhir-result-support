@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="observationExtractor" 
+          class="org.bahmni.module.elisFhirResultSupport.api.helper.ObservationExtractor">
+        <constructor-arg ref="conceptService"/>
+    </bean>
+
+    <bean id="elisResultPostSaveCommand" 
+          class="org.bahmni.module.elisFhirResultSupport.api.command.impl.ElisResultServiceImpl">
+        <constructor-arg ref="orderService"/>
+        <constructor-arg ref="observationExtractor"/>
+        <constructor-arg ref="bahmniFhirDiagnosticReportDao"/>
+    </bean>
+
+</beans>
