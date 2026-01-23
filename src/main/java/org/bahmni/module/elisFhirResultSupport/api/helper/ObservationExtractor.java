@@ -20,6 +20,8 @@ import java.util.UUID;
 public class ObservationExtractor {
 
     private static final String LAB_REPORT_CONCEPT_NAME = "LAB_REPORT";
+    private static final String LAB_MAXNORMAL_CONCEPT_NAME = "LAB_MAXNORMAL";
+    private static final String LAB_MINNORMAL_CONCEPT_NAME = "LAB_MINNORMAL";
 
     public OrderObservations extractObservationsAndAttachments(Order order, Encounter encounter) {
         List<Obs> results = new ArrayList<>();
@@ -41,6 +43,9 @@ public class ObservationExtractor {
                 if (obs.getValueText() != null) {
                     attachments.add(createAttachment(obs, order));
                 }
+            } else if (LAB_MAXNORMAL_CONCEPT_NAME.equalsIgnoreCase(conceptName) ||
+                       LAB_MINNORMAL_CONCEPT_NAME.equalsIgnoreCase(conceptName)) {
+                return;
             } else if (hasValue(obs)) {
                 results.add(obs);
             }

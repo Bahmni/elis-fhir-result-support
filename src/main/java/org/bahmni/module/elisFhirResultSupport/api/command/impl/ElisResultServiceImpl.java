@@ -78,8 +78,7 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
             return;
         }
 
-        order.setFulfillerStatus(Order.FulfillerStatus.IN_PROGRESS);
-        orderService.saveOrder(order, null);
+        orderService.updateOrderFulfillerStatus(order, Order.FulfillerStatus.IN_PROGRESS,"Status Updation");
         logger.info("Updated order {} status to IN_PROGRESS", order.getUuid());
     }
 

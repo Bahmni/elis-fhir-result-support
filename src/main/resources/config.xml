@@ -24,7 +24,7 @@
         <require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
         <require_module>org.bahmni.module.elisatomfeedclient</require_module>
     </require_modules>
-    
+
     <messages>
         <lang>en</lang>
         <file>messages.properties</file>
