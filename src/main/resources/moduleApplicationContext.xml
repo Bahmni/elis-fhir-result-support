@@ -6,7 +6,6 @@
 
     <bean id="observationExtractor" 
           class="org.bahmni.module.elisFhirResultSupport.api.helper.ObservationExtractor">
-        <constructor-arg ref="conceptService"/>
     </bean>
 
     <bean id="elisResultPostSaveCommand" 

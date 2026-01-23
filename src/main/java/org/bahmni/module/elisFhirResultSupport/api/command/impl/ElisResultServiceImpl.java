@@ -74,6 +74,20 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
     }
 	
 	private void updateOrderFulfillerStatus(Order order) {
+		// Check if the order already has the desired fulfiller status
+		if (order.getFulfillerStatus() == Order.FulfillerStatus.IN_PROGRESS) {
+			logger.info("Order {} already has IN_PROGRESS status, skipping update", order.getUuid());
+			return;
+		}
+		
+		// Only update if the order is in a state that allows status change
+		// Skip updating if order already exists in database (has an ID) as OpenMRS doesn't allow editing existing orders
+		if (order.getId() != null) {
+			logger.warn("Order {} already exists in database, cannot update fulfiller status. Current status: {}", 
+					order.getUuid(), order.getFulfillerStatus());
+			return;
+		}
+		
 		order.setFulfillerStatus(Order.FulfillerStatus.IN_PROGRESS);
 		orderService.saveOrder(order, null);
 		logger.info("Updated order {} status to IN_PROGRESS", order.getUuid());
