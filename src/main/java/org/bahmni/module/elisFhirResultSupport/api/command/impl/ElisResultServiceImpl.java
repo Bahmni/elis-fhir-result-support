@@ -3,17 +3,11 @@ package org.bahmni.module.elisFhirResultSupport.api.command.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.command.ELISResultPostSaveCommand;
-import org.bahmni.module.elisFhirResultSupport.api.domain.OrderObservations;
-import org.bahmni.module.elisFhirResultSupport.api.helper.ObservationExtractor;
-import org.bahmni.module.fhir2AddlExtension.api.dao.BahmniFhirDiagnosticReportDao;
-import org.bahmni.module.fhir2AddlExtension.api.model.FhirDiagnosticReportExt;
+import org.bahmni.module.elisFhirResultSupport.api.service.DiagnosticReportService;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
 import org.openmrs.Order;
-import org.openmrs.Provider;
 import org.openmrs.api.OrderService;
-import org.openmrs.module.fhir2.model.FhirDiagnosticReport;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,14 +18,11 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
     private static final Logger logger = LogManager.getLogger(ElisResultServiceImpl.class);
 
     private final OrderService orderService;
-    private final ObservationExtractor observationExtractor;
-    private final BahmniFhirDiagnosticReportDao diagnosticReportDao;
+    private final DiagnosticReportService diagnosticReportService;
 
-    public ElisResultServiceImpl(OrderService orderService, ObservationExtractor observationExtractor,
-                                 BahmniFhirDiagnosticReportDao diagnosticReportDao) {
+    public ElisResultServiceImpl(OrderService orderService, DiagnosticReportService diagnosticReportService) {
         this.orderService = orderService;
-        this.observationExtractor = observationExtractor;
-        this.diagnosticReportDao = diagnosticReportDao;
+        this.diagnosticReportService = diagnosticReportService;
     }
 
     @Override
@@ -56,7 +47,7 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
 
         for (Order order : orders) {
             updateOrderFulfillerStatus(order);
-            createFhirDiagnosticReport(order, encounter);
+            diagnosticReportService.createOrUpdateDiagnosticReport(order, encounter);
         }
     }
 
@@ -78,59 +69,7 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
             return;
         }
 
-        orderService.updateOrderFulfillerStatus(order, Order.FulfillerStatus.IN_PROGRESS,"Status Updation");
+        orderService.updateOrderFulfillerStatus(order, Order.FulfillerStatus.IN_PROGRESS, null);
         logger.info("Updated order {} status to IN_PROGRESS", order.getUuid());
-    }
-
-    private void createFhirDiagnosticReport(Order order, Encounter encounter) {
-        OrderObservations orderObservations = observationExtractor.extractObservationsAndAttachments(order, encounter);
-
-        FhirDiagnosticReportExt report = new FhirDiagnosticReportExt();
-        report.setSubject(order.getPatient());
-        report.setEncounter(encounter);
-        Set<Order> orders = new HashSet<>();
-        orders.add(order);
-        report.setOrders(orders);
-        report.setCode(order.getConcept());
-        report.setResults(new HashSet<>(orderObservations.getResults()));
-        report.setPerformers(extractPerformers(encounter));
-        report.setPresentedForms(orderObservations.getAttachments());
-        report.setStatus(determineStatus(orderObservations.getResults()));
-
-        diagnosticReportDao.createOrUpdate(report);
-        logger.info("Created FHIR diagnostic report for order {}", order.getUuid());
-    }
-
-    private Set<Provider> extractPerformers(Encounter encounter) {
-        Set<Provider> performers = new HashSet<>();
-        for (EncounterProvider encounterProvider : encounter.getEncounterProviders()) {
-            if (encounterProvider.getProvider() != null) {
-                performers.add(encounterProvider.getProvider());
-            }
-        }
-        return performers;
-    }
-
-    private FhirDiagnosticReport.DiagnosticReportStatus determineStatus(List<Obs> results) {
-        if (results.isEmpty()) {
-            return FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY;
-        }
-
-        for (Obs obs : results) {
-            if (Boolean.TRUE.equals(obs.getVoided()) || !hasObsValue(obs)) {
-                return FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY;
-            }
-        }
-
-        return FhirDiagnosticReport.DiagnosticReportStatus.FINAL;
-    }
-
-    private boolean hasObsValue(Obs obs) {
-        return obs.getValueNumeric() != null ||
-                obs.getValueText() != null ||
-                obs.getValueCoded() != null ||
-                obs.getValueComplex() != null ||
-                obs.getValueBoolean() != null ||
-                obs.getValueDatetime() != null;
     }
 }

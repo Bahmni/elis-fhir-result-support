@@ -8,11 +8,16 @@
           class="org.bahmni.module.elisFhirResultSupport.api.helper.ObservationExtractor">
     </bean>
 
+    <bean id="diagnosticReportService" 
+          class="org.bahmni.module.elisFhirResultSupport.api.service.DiagnosticReportService">
+        <constructor-arg ref="observationExtractor"/>
+        <constructor-arg ref="bahmniFhirDiagnosticReportDao"/>
+    </bean>
+
     <bean id="elisResultPostSaveCommand" 
           class="org.bahmni.module.elisFhirResultSupport.api.command.impl.ElisResultServiceImpl">
         <constructor-arg ref="orderService"/>
-        <constructor-arg ref="observationExtractor"/>
-        <constructor-arg ref="bahmniFhirDiagnosticReportDao"/>
+        <constructor-arg ref="diagnosticReportService"/>
     </bean>
 
 </beans>
