@@ -25,8 +25,7 @@ public class ObservationExtractor {
         List<Obs> results = new ArrayList<>();
         Set<Attachment> attachments = new HashSet<>();
 
-        // Process all observations including nested ones
-        for (Obs obs : encounter.getAllObs(false)) {
+        for (Obs obs : encounter.getAllObs()) {
             processObservation(obs, order, results, attachments);
         }
 
@@ -34,7 +33,6 @@ public class ObservationExtractor {
     }
 
     private void processObservation(Obs obs, Order order, List<Obs> results, Set<Attachment> attachments) {
-        // Check if this observation belongs to the order
         if (obs.getOrder() != null && obs.getOrder().equals(order)) {
             String conceptName = obs.getConcept().getName() != null ?
                     obs.getConcept().getName().getName() : "";

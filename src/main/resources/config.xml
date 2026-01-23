@@ -10,6 +10,7 @@
     <description>
         Module for creating FHIR diagnostic reports from ELIS lab results
     </description>
+
     <activator>org.bahmni.module.elisFhirResultSupport.ElisFhirResultSupportActivator</activator>
 
     <updateURL>https://example.com/modules/download/elisFhirResultSupport/update.rdf</updateURL>
@@ -23,6 +24,7 @@
         <require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
         <require_module>org.bahmni.module.elisatomfeedclient</require_module>
     </require_modules>
+    
     <messages>
         <lang>en</lang>
         <file>messages.properties</file>

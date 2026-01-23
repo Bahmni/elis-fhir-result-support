@@ -21,47 +21,46 @@ import java.util.Set;
 
 public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
 
-	private static final Logger logger = LogManager.getLogger(ElisResultServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(ElisResultServiceImpl.class);
 
-	private final OrderService orderService;
-	private final ObservationExtractor observationExtractor;
-	private final BahmniFhirDiagnosticReportDao diagnosticReportDao;
+    private final OrderService orderService;
+    private final ObservationExtractor observationExtractor;
+    private final BahmniFhirDiagnosticReportDao diagnosticReportDao;
 
-	public ElisResultServiceImpl(OrderService orderService, ObservationExtractor observationExtractor,
-	        BahmniFhirDiagnosticReportDao diagnosticReportDao) {
-		this.orderService = orderService;
-		this.observationExtractor = observationExtractor;
-		this.diagnosticReportDao = diagnosticReportDao;
-	}
-	
-	@Override
-	public void onResult(List<Encounter> encounters) {
-		logger.info("Processing {} lab result encounters", encounters.size());
-		
-		for (Encounter encounter : encounters) {
-			try {
-				processEncounter(encounter);
-			}
-			catch (Exception e) {
-				logger.error("Error processing encounter {}: {}", encounter.getUuid(), e.getMessage(), e);
-			}
-		}
-		
-		logger.info("Completed processing {} encounters", encounters.size());
-	}
-	
-	private void processEncounter(Encounter encounter) {
-		logger.info("Processing encounter: {}", encounter.getUuid());
-		
-		Set<Order> orders = extractOrdersFromEncounter(encounter);
-		
-		for (Order order : orders) {
-			updateOrderFulfillerStatus(order);
-			createFhirDiagnosticReport(order, encounter);
-		}
-	}
-	
-	private Set<Order> extractOrdersFromEncounter(Encounter encounter) {
+    public ElisResultServiceImpl(OrderService orderService, ObservationExtractor observationExtractor,
+                                 BahmniFhirDiagnosticReportDao diagnosticReportDao) {
+        this.orderService = orderService;
+        this.observationExtractor = observationExtractor;
+        this.diagnosticReportDao = diagnosticReportDao;
+    }
+
+    @Override
+    public void onResult(List<Encounter> encounters) {
+        logger.info("Processing {} lab result encounters", encounters.size());
+
+        for (Encounter encounter : encounters) {
+            try {
+                processEncounter(encounter);
+            } catch (Exception e) {
+                logger.error("Error processing encounter {}: {}", encounter.getUuid(), e.getMessage(), e);
+            }
+        }
+
+        logger.info("Completed processing {} encounters", encounters.size());
+    }
+
+    private void processEncounter(Encounter encounter) {
+        logger.info("Processing encounter: {}", encounter.getUuid());
+
+        Set<Order> orders = extractOrdersFromEncounter(encounter);
+
+        for (Order order : orders) {
+            updateOrderFulfillerStatus(order);
+            createFhirDiagnosticReport(order, encounter);
+        }
+    }
+
+    private Set<Order> extractOrdersFromEncounter(Encounter encounter) {
         Set<Order> uniqueOrders = new HashSet<>();
 
         for (Obs obs : encounter.getAllObs()) {
@@ -69,83 +68,70 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
                 uniqueOrders.add(obs.getOrder());
             }
         }
-        
+
         return uniqueOrders;
     }
-	
-	private void updateOrderFulfillerStatus(Order order) {
-		// Check if the order already has the desired fulfiller status
-		if (order.getFulfillerStatus() == Order.FulfillerStatus.IN_PROGRESS) {
-			logger.info("Order {} already has IN_PROGRESS status, skipping update", order.getUuid());
-			return;
-		}
-		
-		// Only update if the order is in a state that allows status change
-		// Skip updating if order already exists in database (has an ID) as OpenMRS doesn't allow editing existing orders
-		if (order.getId() != null) {
-			logger.warn("Order {} already exists in database, cannot update fulfiller status. Current status: {}", 
-					order.getUuid(), order.getFulfillerStatus());
-			return;
-		}
-		
-		order.setFulfillerStatus(Order.FulfillerStatus.IN_PROGRESS);
-		orderService.saveOrder(order, null);
-		logger.info("Updated order {} status to IN_PROGRESS", order.getUuid());
-	}
-	
-	private void createFhirDiagnosticReport(Order order, Encounter encounter) {
-		OrderObservations orderObservations = observationExtractor.extractObservationsAndAttachments(order, encounter);
-		
-		FhirDiagnosticReportExt report = new FhirDiagnosticReportExt();
-		report.setSubject(order.getPatient());
-		report.setEncounter(encounter);
-		Set<Order> orders = new HashSet<>();
-		orders.add(order);
-		report.setOrders(orders);
-		report.setCode(order.getConcept());
-		report.setResults(new HashSet<>(orderObservations.getResults()));
-		report.setPerformers(extractPerformers(encounter));
-		report.setPresentedForms(orderObservations.getAttachments());
-		report.setStatus(determineStatus(orderObservations.getResults()));
-        //TODO - Verify status mapping .We can update status as final here
 
-		diagnosticReportDao.createOrUpdate(report);
-		logger.info("Created FHIR diagnostic report for order {}", order.getUuid());
-	}
-	
-	private Set<Provider> extractPerformers(Encounter encounter) {
-		Set<Provider> performers = new HashSet<>();
-		for (EncounterProvider encounterProvider : encounter.getEncounterProviders()) {
-			if (encounterProvider.getProvider() != null) {
-				performers.add(encounterProvider.getProvider());
-			}
-		}
-		return performers;
-	}
-	
-	private FhirDiagnosticReport.DiagnosticReportStatus determineStatus(List<Obs> results) {
-		// If no results are present, status is PRELIMINARY
-		if (results.isEmpty()) {
-			return FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY;
-		}
-		
-		// If all result observations are final (non-voided and have values), status is FINAL
-		// Otherwise PRELIMINARY
-		for (Obs obs : results) {
-			if (obs.getVoided() || !hasObsValue(obs)) {
-				return FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY;
-			}
-		}
-		
-		return FhirDiagnosticReport.DiagnosticReportStatus.FINAL;
-	}
-	
-	private boolean hasObsValue(Obs obs) {
-		return obs.getValueNumeric() != null || 
-		       obs.getValueText() != null || 
-		       obs.getValueCoded() != null || 
-		       obs.getValueComplex() != null || 
-		       obs.getValueBoolean() != null ||
-		       obs.getValueDatetime() != null;
-	}
+    private void updateOrderFulfillerStatus(Order order) {
+        if (order.getFulfillerStatus() == Order.FulfillerStatus.IN_PROGRESS) {
+            logger.info("Order {} already has IN_PROGRESS status, skipping update", order.getUuid());
+            return;
+        }
+
+        order.setFulfillerStatus(Order.FulfillerStatus.IN_PROGRESS);
+        orderService.saveOrder(order, null);
+        logger.info("Updated order {} status to IN_PROGRESS", order.getUuid());
+    }
+
+    private void createFhirDiagnosticReport(Order order, Encounter encounter) {
+        OrderObservations orderObservations = observationExtractor.extractObservationsAndAttachments(order, encounter);
+
+        FhirDiagnosticReportExt report = new FhirDiagnosticReportExt();
+        report.setSubject(order.getPatient());
+        report.setEncounter(encounter);
+        Set<Order> orders = new HashSet<>();
+        orders.add(order);
+        report.setOrders(orders);
+        report.setCode(order.getConcept());
+        report.setResults(new HashSet<>(orderObservations.getResults()));
+        report.setPerformers(extractPerformers(encounter));
+        report.setPresentedForms(orderObservations.getAttachments());
+        report.setStatus(determineStatus(orderObservations.getResults()));
+
+        diagnosticReportDao.createOrUpdate(report);
+        logger.info("Created FHIR diagnostic report for order {}", order.getUuid());
+    }
+
+    private Set<Provider> extractPerformers(Encounter encounter) {
+        Set<Provider> performers = new HashSet<>();
+        for (EncounterProvider encounterProvider : encounter.getEncounterProviders()) {
+            if (encounterProvider.getProvider() != null) {
+                performers.add(encounterProvider.getProvider());
+            }
+        }
+        return performers;
+    }
+
+    private FhirDiagnosticReport.DiagnosticReportStatus determineStatus(List<Obs> results) {
+        if (results.isEmpty()) {
+            return FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY;
+        }
+
+        for (Obs obs : results) {
+            if (Boolean.TRUE.equals(obs.getVoided()) || !hasObsValue(obs)) {
+                return FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY;
+            }
+        }
+
+        return FhirDiagnosticReport.DiagnosticReportStatus.FINAL;
+    }
+
+    private boolean hasObsValue(Obs obs) {
+        return obs.getValueNumeric() != null ||
+                obs.getValueText() != null ||
+                obs.getValueCoded() != null ||
+                obs.getValueComplex() != null ||
+                obs.getValueBoolean() != null ||
+                obs.getValueDatetime() != null;
+    }
 }
