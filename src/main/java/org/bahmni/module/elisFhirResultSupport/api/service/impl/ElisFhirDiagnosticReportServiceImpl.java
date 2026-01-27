@@ -8,6 +8,7 @@ import ca.uhn.fhir.rest.param.TokenOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bahmni.module.elisFhirResultSupport.api.constants.ElisFhirResultSupportConstants;
 import org.bahmni.module.elisFhirResultSupport.api.domain.OrderObservations;
 import org.bahmni.module.elisFhirResultSupport.api.helper.ObservationExtractor;
 import org.bahmni.module.elisFhirResultSupport.api.service.ElisFhirDiagnosticReportService;
@@ -126,7 +127,12 @@ public class ElisFhirDiagnosticReportServiceImpl implements ElisFhirDiagnosticRe
 
     private boolean isPanelOrder(Order order) {
         Concept concept = order.getConcept();
-        return concept != null && concept.getSet() != null && concept.getSet();
+        if (concept == null || concept.getConceptClass() == null) {
+            return false;
+        }
+        
+        String conceptClassName = concept.getConceptClass().getName();
+        return ElisFhirResultSupportConstants.LAB_SET_CONCEPT_CLASS_NAME.equalsIgnoreCase(conceptClassName);
     }
 
     private boolean isPanelComplete(List<Obs> results, Order order) {

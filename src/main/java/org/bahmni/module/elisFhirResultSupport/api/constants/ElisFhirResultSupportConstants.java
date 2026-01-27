@@ -14,4 +14,6 @@ public class ElisFhirResultSupportConstants {
 	
 	public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
 	
+	public static final String LAB_SET_CONCEPT_CLASS_NAME = "LabSet";
+	
 }

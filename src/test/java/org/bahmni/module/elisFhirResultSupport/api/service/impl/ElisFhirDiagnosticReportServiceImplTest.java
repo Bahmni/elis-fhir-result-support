@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.openmrs.Concept;
+import org.openmrs.ConceptClass;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
@@ -309,11 +310,13 @@ public class ElisFhirDiagnosticReportServiceImplTest {
     @Test
     public void shouldSetStatusToPreliminaryWhenPanelOrderIsIncomplete() {
         Concept panelConcept = mock(Concept.class);
+        ConceptClass labSetClass = mock(ConceptClass.class);
         Concept test1 = mock(Concept.class);
         Concept test2 = mock(Concept.class);
         Concept test3 = mock(Concept.class);
 
-        when(panelConcept.getSet()).thenReturn(true);
+        when(labSetClass.getName()).thenReturn("LabSet");
+        when(panelConcept.getConceptClass()).thenReturn(labSetClass);
         when(panelConcept.getSetMembers()).thenReturn(Arrays.asList(test1, test2, test3));
         when(order.getConcept()).thenReturn(panelConcept);
 
@@ -341,10 +344,12 @@ public class ElisFhirDiagnosticReportServiceImplTest {
     @Test
     public void shouldSetStatusToFinalWhenPanelOrderIsComplete() {
         Concept panelConcept = mock(Concept.class);
+        ConceptClass labSetClass = mock(ConceptClass.class);
         Concept test1 = mock(Concept.class);
         Concept test2 = mock(Concept.class);
 
-        when(panelConcept.getSet()).thenReturn(true);
+        when(labSetClass.getName()).thenReturn("LabSet");
+        when(panelConcept.getConceptClass()).thenReturn(labSetClass);
         when(panelConcept.getSetMembers()).thenReturn(Arrays.asList(test1, test2));
         when(order.getConcept()).thenReturn(panelConcept);
 
@@ -372,11 +377,13 @@ public class ElisFhirDiagnosticReportServiceImplTest {
     @Test
     public void shouldHandlePanelWithMoreResultsThanSetMembers() {
         Concept panelConcept = mock(Concept.class);
+        ConceptClass labSetClass = mock(ConceptClass.class);
         Concept test1 = mock(Concept.class);
         Concept test2 = mock(Concept.class);
         Concept additionalTest = mock(Concept.class);
 
-        when(panelConcept.getSet()).thenReturn(true);
+        when(labSetClass.getName()).thenReturn("LabSet");
+        when(panelConcept.getConceptClass()).thenReturn(labSetClass);
         when(panelConcept.getSetMembers()).thenReturn(Arrays.asList(test1, test2));
         when(order.getConcept()).thenReturn(panelConcept);
 
