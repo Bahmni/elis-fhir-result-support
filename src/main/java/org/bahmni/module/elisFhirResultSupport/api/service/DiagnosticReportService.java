@@ -70,14 +70,12 @@ public class DiagnosticReportService {
     public FhirDiagnosticReportExt findExistingReport(Encounter encounter, Order order) {
         try {
             SearchParameterMap theParams = new SearchParameterMap();
-            
-            // Search by encounter
+
             ReferenceAndListParam encounterRef = new ReferenceAndListParam()
                 .addAnd(new ReferenceOrListParam()
                     .add(new ReferenceParam().setValue(encounter.getUuid())));
             theParams.addParameter(FhirConstants.ENCOUNTER_REFERENCE_SEARCH_HANDLER, encounterRef);
-            
-            // Search by concept (code)
+
             TokenAndListParam conceptCode = new TokenAndListParam()
                 .addAnd(new TokenOrListParam()
                     .add(new TokenParam().setValue(order.getConcept().getUuid())));
