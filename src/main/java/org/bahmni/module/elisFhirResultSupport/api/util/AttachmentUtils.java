@@ -4,6 +4,7 @@ import org.bahmni.module.elisFhirResultSupport.api.constants.ElisFhirResultSuppo
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 
+import java.net.URLConnection;
 import java.util.Locale;
 
 public class AttachmentUtils {
@@ -23,25 +24,12 @@ public class AttachmentUtils {
 			return preferredName.getName();
 		}
 		
-		return concept.getName() != null ? concept.getName().getName()
+		return concept.getName(locale) != null ? concept.getName(locale).getName()
 		        : ElisFhirResultSupportConstants.DEFAULT_ATTACHMENT_TITLE;
 	}
 	
 	public static String deriveContentType(String url) {
-		if (url == null) {
-			return null;
-		}
-		
-		String attachmentUrl = url.toLowerCase();
-		if (attachmentUrl.endsWith(ElisFhirResultSupportConstants.EXTENSION_PDF)) {
-			return ElisFhirResultSupportConstants.CONTENT_TYPE_PDF;
-		} else if (attachmentUrl.endsWith(ElisFhirResultSupportConstants.EXTENSION_JPG)
-		        || attachmentUrl.endsWith(ElisFhirResultSupportConstants.EXTENSION_JPEG)) {
-			return ElisFhirResultSupportConstants.CONTENT_TYPE_JPEG;
-		} else if (attachmentUrl.endsWith(ElisFhirResultSupportConstants.EXTENSION_PNG)) {
-			return ElisFhirResultSupportConstants.CONTENT_TYPE_PNG;
-		}
-		
-		return ElisFhirResultSupportConstants.DEFAULT_CONTENT_TYPE;
+		String contentType = URLConnection.guessContentTypeFromName(url);
+		return contentType != null ? contentType : ElisFhirResultSupportConstants.DEFAULT_CONTENT_TYPE;
 	}
 }
