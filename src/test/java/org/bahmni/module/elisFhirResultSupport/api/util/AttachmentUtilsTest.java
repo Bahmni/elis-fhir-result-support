@@ -134,4 +134,18 @@ public class AttachmentUtilsTest {
 
         assertEquals("application/pdf", result);
     }
+
+    @Test
+    public void shouldReturnDocContentTypeForDocFile() {
+        String result = AttachmentUtils.deriveContentType("document.doc");
+
+        assertEquals("application/msword", result);
+    }
+
+    @Test
+    public void shouldReturnDocxContentTypeForDocxFile() {
+        String result = AttachmentUtils.deriveContentType("document.docx");
+
+        assertEquals("application/vnd.openxmlformats-officedocument.wordprocessingml.document", result);
+    }
 }
