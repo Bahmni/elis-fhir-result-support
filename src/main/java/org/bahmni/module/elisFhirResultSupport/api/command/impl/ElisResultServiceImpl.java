@@ -3,7 +3,7 @@ package org.bahmni.module.elisFhirResultSupport.api.command.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.command.ELISResultPostSaveCommand;
-import org.bahmni.module.elisFhirResultSupport.api.service.DiagnosticReportService;
+import org.bahmni.module.elisFhirResultSupport.api.service.ElisFhirDiagnosticReportService;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -18,9 +18,9 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
     private static final Logger logger = LogManager.getLogger(ElisResultServiceImpl.class);
 
     private final OrderService orderService;
-    private final DiagnosticReportService diagnosticReportService;
+    private final ElisFhirDiagnosticReportService diagnosticReportService;
 
-    public ElisResultServiceImpl(OrderService orderService, DiagnosticReportService diagnosticReportService) {
+    public ElisResultServiceImpl(OrderService orderService, ElisFhirDiagnosticReportService diagnosticReportService) {
         this.orderService = orderService;
         this.diagnosticReportService = diagnosticReportService;
     }

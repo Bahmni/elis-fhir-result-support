@@ -1,6 +1,6 @@
 package org.bahmni.module.elisFhirResultSupport.api.command.impl;
 
-import org.bahmni.module.elisFhirResultSupport.api.service.DiagnosticReportService;
+import org.bahmni.module.elisFhirResultSupport.api.service.ElisFhirDiagnosticReportService;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -16,12 +16,12 @@ public class ElisResultServiceImplTest {
 
     private ElisResultServiceImpl service;
     private OrderService orderService;
-    private DiagnosticReportService diagnosticReportService;
+    private ElisFhirDiagnosticReportService diagnosticReportService;
 
     @Before
     public void setUp() {
         orderService = mock(OrderService.class);
-        diagnosticReportService = mock(DiagnosticReportService.class);
+        diagnosticReportService = mock(ElisFhirDiagnosticReportService.class);
         service = new ElisResultServiceImpl(orderService, diagnosticReportService);
     }
 

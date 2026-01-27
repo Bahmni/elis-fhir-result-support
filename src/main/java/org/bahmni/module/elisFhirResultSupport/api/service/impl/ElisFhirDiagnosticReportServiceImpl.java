@@ -1,4 +1,4 @@
-package org.bahmni.module.elisFhirResultSupport.api.service;
+package org.bahmni.module.elisFhirResultSupport.api.service.impl;
 
 import ca.uhn.fhir.rest.param.ReferenceAndListParam;
 import ca.uhn.fhir.rest.param.ReferenceOrListParam;
@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bahmni.module.elisFhirResultSupport.api.domain.OrderObservations;
 import org.bahmni.module.elisFhirResultSupport.api.helper.ObservationExtractor;
+import org.bahmni.module.elisFhirResultSupport.api.service.ElisFhirDiagnosticReportService;
 import org.bahmni.module.elisFhirResultSupport.api.util.ObsUtils;
 import org.bahmni.module.fhir2AddlExtension.api.dao.BahmniFhirDiagnosticReportDao;
 import org.bahmni.module.fhir2AddlExtension.api.model.FhirDiagnosticReportExt;
@@ -27,15 +28,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DiagnosticReportService {
+public class ElisFhirDiagnosticReportServiceImpl implements ElisFhirDiagnosticReportService {
 
-    private static final Logger logger = LogManager.getLogger(DiagnosticReportService.class);
+    private static final Logger logger = LogManager.getLogger(ElisFhirDiagnosticReportServiceImpl.class);
 
     private final ObservationExtractor observationExtractor;
     private final BahmniFhirDiagnosticReportDao diagnosticReportDao;
 
-    public DiagnosticReportService(ObservationExtractor observationExtractor,
-                                   BahmniFhirDiagnosticReportDao diagnosticReportDao) {
+    public ElisFhirDiagnosticReportServiceImpl(ObservationExtractor observationExtractor,
+                                               BahmniFhirDiagnosticReportDao diagnosticReportDao) {
         this.observationExtractor = observationExtractor;
         this.diagnosticReportDao = diagnosticReportDao;
     }
