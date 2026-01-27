@@ -41,10 +41,6 @@ public class AttachmentUtils {
 	}
 
 	public static String deriveContentType(String url) {
-		if (url == null || url.isEmpty()) {
-			return ElisFhirResultSupportConstants.DEFAULT_CONTENT_TYPE;
-		}
-
 		String extension = extractFileExtension(url);
 		if (extension != null && EXTENSION_TO_MIME_TYPE.containsKey(extension)) {
 			return EXTENSION_TO_MIME_TYPE.get(extension);
@@ -53,6 +49,11 @@ public class AttachmentUtils {
 		return ElisFhirResultSupportConstants.DEFAULT_CONTENT_TYPE;
 	}
 
+    // TODO: Upon upgrading to Java 11 or higher, we can leverag
+    //  URLConnection.guessContentTypeFromName to determine
+    //  an object's content type based on the URL's "file" component.
+    //  Currently, doc and docx formats are not natively supported therefore,
+    //  this custom extraction logic has been implemented as a workaround.
 	private static String extractFileExtension(String url) {
 		int lastDotIndex = url.lastIndexOf('.');
 		int lastSlashIndex = url.lastIndexOf('/');
