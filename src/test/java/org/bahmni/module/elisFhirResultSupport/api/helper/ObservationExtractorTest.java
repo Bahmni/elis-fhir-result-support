@@ -95,14 +95,20 @@ public class ObservationExtractorTest {
     }
 
     @Test
-    public void shouldExcludeLabRangeAndNotesObservations() {
+    public void shouldExcludeAllObservationsOtherThanResult() {
         Obs maxNormal = createObs("LAB_MAXNORMAL", 100.0);
         Obs minNormal = createObs("LAB_MINNORMAL", 10.0);
         Obs notes = createObs("LAB_NOTES", "Some notes");
+        Obs labAbnormal = createObs("LAB_ABNORMAL", "true");
+        Obs referredOut = createObs("REFERRED_OUT", "referred");
+        Obs labResult = createObs("LAB_RESULT", "result-value");
+        when(labAbnormal.getOrder()).thenReturn(order);
+        when(referredOut.getOrder()).thenReturn(order);
+        when(labResult.getOrder()).thenReturn(order);
         when(maxNormal.getOrder()).thenReturn(order);
         when(minNormal.getOrder()).thenReturn(order);
         when(notes.getOrder()).thenReturn(order);
-        when(encounter.getObsAtTopLevel(false)).thenReturn(setOf(maxNormal, minNormal, notes));
+        when(encounter.getObsAtTopLevel(false)).thenReturn(setOf(maxNormal, minNormal, notes, labAbnormal, referredOut, labResult));
 
         OrderObservations result = observationExtractor.extractObservationsAndAttachments(order, encounter);
 
