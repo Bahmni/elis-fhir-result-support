@@ -18,8 +18,8 @@ public class ElisFhirResultSupportConstants {
 
 	public static final String LAB_SET_CONCEPT_CLASS_NAME = "LabSet";
 
-    public static final String LAB_RESULT_CONCEPT_CLASS_NAME = "LAB_RESULT";
+    public static final String LAB_RESULT_CONCEPT_NAME = "LAB_RESULT";
 
-    public static final String REFERRED_OUT_CONCEPT_CLASS_NAME = "REFERRED_OUT";
+    public static final String REFERRED_OUT_CONCEPT_NAME = "REFERRED_OUT";
 
 }

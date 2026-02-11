@@ -52,8 +52,8 @@ public class ObservationExtractor {
                 ElisFhirResultSupportConstants.LAB_MINNORMAL_CONCEPT_NAME.equalsIgnoreCase(conceptName) ||
                 ElisFhirResultSupportConstants.LAB_NOTES_CONCEPT_NAME.equalsIgnoreCase(conceptName) ||
                 ElisFhirResultSupportConstants.LAB_ABNORMAL_CONCEPT_NAME.equalsIgnoreCase(conceptName) ||
-                ElisFhirResultSupportConstants.REFERRED_OUT_CONCEPT_CLASS_NAME.equalsIgnoreCase(conceptName) ||
-                ElisFhirResultSupportConstants.LAB_RESULT_CONCEPT_CLASS_NAME.equalsIgnoreCase(conceptName);
+                ElisFhirResultSupportConstants.REFERRED_OUT_CONCEPT_NAME.equalsIgnoreCase(conceptName) ||
+                ElisFhirResultSupportConstants.LAB_RESULT_CONCEPT_NAME.equalsIgnoreCase(conceptName);
     }
 
     private Attachment createAttachment(Obs obs, Order order) {
