@@ -305,6 +305,7 @@ public class ElisFhirDiagnosticReportServiceImplTest {
 
         FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY, savedReport.getStatus());
+        assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.PRELIMINARY, savedReport.getStatusExt());
     }
 
     @Test
@@ -339,6 +340,7 @@ public class ElisFhirDiagnosticReportServiceImplTest {
 
         FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY, savedReport.getStatus());
+        assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.PRELIMINARY, savedReport.getStatusExt());
     }
 
     @Test
@@ -372,6 +374,7 @@ public class ElisFhirDiagnosticReportServiceImplTest {
 
         FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.FINAL, savedReport.getStatus());
+        assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.FINAL, savedReport.getStatusExt());
     }
 
     @Test
@@ -431,6 +434,7 @@ public class ElisFhirDiagnosticReportServiceImplTest {
 
         FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.FINAL, savedReport.getStatus());
+        assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.FINAL, savedReport.getStatusExt());
     }
 
     private OrderObservations createOrderObservations(List<Obs> results, Set<Attachment> attachments) {
