@@ -6,7 +6,7 @@ import org.openmrs.Order;
 
 public interface ElisFhirDiagnosticReportService {
 	
-	void createOrUpdateDiagnosticReport(Order order, Encounter encounter);
+	FhirDiagnosticReportExt createOrUpdateDiagnosticReport(Order order, Encounter encounter);
 	
 	FhirDiagnosticReportExt findExistingReport(Encounter encounter, Order order);
 }
