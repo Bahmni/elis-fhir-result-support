@@ -9,7 +9,6 @@ import org.bahmni.module.fhir2AddlExtension.api.model.Attachment;
 import org.bahmni.module.fhir2AddlExtension.api.model.FhirDiagnosticReportExt;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.Encounter;
@@ -58,6 +57,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(order.getUuid()).thenReturn("order-uuid");
         when(encounter.getUuid()).thenReturn("encounter-uuid");
         when(orderConcept.getUuid()).thenReturn("concept-uuid");
+
+        when(diagnosticReportDao.createOrUpdate(any())).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
     @Test
@@ -67,12 +68,9 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
+        verify(diagnosticReportDao).createOrUpdate(any(FhirDiagnosticReportExt.class));
         assertEquals(patient, savedReport.getSubject());
         assertEquals(encounter, savedReport.getEncounter());
         assertEquals(orderConcept, savedReport.getCode());
@@ -89,12 +87,9 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.singletonList(existingReport));
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt updatedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt updatedReport = reportCaptor.getValue();
+        verify(diagnosticReportDao).createOrUpdate(any(FhirDiagnosticReportExt.class));
         assertEquals("existing-report-uuid", updatedReport.getUuid());
         assertEquals(patient, updatedReport.getSubject());
     }
@@ -110,12 +105,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(2, savedReport.getResults().size());
         assertTrue(savedReport.getResults().contains(obs1));
         assertTrue(savedReport.getResults().contains(obs2));
@@ -132,12 +123,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(attachments, savedReport.getPresentedForms());
     }
 
@@ -156,12 +143,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(observationExtractor.extractObservationsAndAttachments(order, encounter)).thenReturn(orderObservations);
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(2, savedReport.getPerformers().size());
         assertTrue(savedReport.getPerformers().contains(provider1));
         assertTrue(savedReport.getPerformers().contains(provider2));
@@ -181,12 +164,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(observationExtractor.extractObservationsAndAttachments(order, encounter)).thenReturn(orderObservations);
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(1, savedReport.getPerformers().size());
         assertTrue(savedReport.getPerformers().contains(provider));
     }
@@ -230,12 +209,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY, savedReport.getStatus());
     }
 
@@ -250,12 +225,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.FINAL, savedReport.getStatus());
     }
 
@@ -270,12 +241,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY, savedReport.getStatus());
     }
 
@@ -298,12 +265,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY, savedReport.getStatus());
         assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.PRELIMINARY, savedReport.getStatusExt());
     }
@@ -333,12 +296,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.PRELIMINARY, savedReport.getStatus());
         assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.PRELIMINARY, savedReport.getStatusExt());
     }
@@ -367,12 +326,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.FINAL, savedReport.getStatus());
         assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.FINAL, savedReport.getStatusExt());
     }
@@ -404,12 +359,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.FINAL, savedReport.getStatus());
     }
 
@@ -427,12 +378,8 @@ public class ElisFhirDiagnosticReportServiceImplTest {
         when(diagnosticReportDao.getSearchResults(any())).thenReturn(Collections.emptyList());
         when(encounter.getEncounterProviders()).thenReturn(Collections.emptySet());
 
-        service.createOrUpdateDiagnosticReport(order, encounter);
+        FhirDiagnosticReportExt savedReport = service.createOrUpdateDiagnosticReport(order, encounter);
 
-        ArgumentCaptor<FhirDiagnosticReportExt> reportCaptor = ArgumentCaptor.forClass(FhirDiagnosticReportExt.class);
-        verify(diagnosticReportDao).createOrUpdate(reportCaptor.capture());
-
-        FhirDiagnosticReportExt savedReport = reportCaptor.getValue();
         assertEquals(FhirDiagnosticReport.DiagnosticReportStatus.FINAL, savedReport.getStatus());
         assertEquals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.FINAL, savedReport.getStatusExt());
     }
