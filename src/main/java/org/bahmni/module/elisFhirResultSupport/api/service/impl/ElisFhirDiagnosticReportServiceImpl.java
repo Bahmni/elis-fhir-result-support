@@ -42,7 +42,7 @@ public class ElisFhirDiagnosticReportServiceImpl implements ElisFhirDiagnosticRe
         this.diagnosticReportDao = diagnosticReportDao;
     }
 
-    public void createOrUpdateDiagnosticReport(Order order, Encounter encounter) {
+    public FhirDiagnosticReportExt createOrUpdateDiagnosticReport(Order order, Encounter encounter) {
         OrderObservations orderObservations = observationExtractor.extractObservationsAndAttachments(order, encounter);
 
         FhirDiagnosticReportExt report = findExistingReport(encounter, order);
@@ -77,8 +77,8 @@ public class ElisFhirDiagnosticReportServiceImpl implements ElisFhirDiagnosticRe
         }
         report.setStatusExt(statusExt);
 
-        diagnosticReportDao.createOrUpdate(report);
         logger.info("Saved FHIR diagnostic report for order {}", order.getUuid());
+        return diagnosticReportDao.createOrUpdate(report);
     }
 
     public FhirDiagnosticReportExt findExistingReport(Encounter encounter, Order order) {
