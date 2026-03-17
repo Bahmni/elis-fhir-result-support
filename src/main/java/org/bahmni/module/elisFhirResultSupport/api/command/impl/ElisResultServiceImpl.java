@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.command.ELISResultPostSaveCommand;
 import org.bahmni.module.elisFhirResultSupport.api.service.ElisFhirDiagnosticReportService;
-import org.bahmni.module.fhir2AddlExtension.api.model.FhirDiagnosticReportExt;
+import org.bahmni.module.fhir2addlextension.api.model.FhirDiagnosticReportExt;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;

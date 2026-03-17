@@ -4,7 +4,7 @@ import org.bahmni.module.elisFhirResultSupport.api.constants.ElisFhirResultSuppo
 import org.bahmni.module.elisFhirResultSupport.api.domain.OrderObservations;
 import org.bahmni.module.elisFhirResultSupport.api.util.AttachmentUtils;
 import org.bahmni.module.elisFhirResultSupport.api.util.ObsUtils;
-import org.bahmni.module.fhir2AddlExtension.api.model.Attachment;
+import org.bahmni.module.fhir2addlextension.api.model.Attachment;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
