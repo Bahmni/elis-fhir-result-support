@@ -1,6 +1,6 @@
 package org.bahmni.module.elisFhirResultSupport.api.domain;
 
-import org.bahmni.module.fhir2AddlExtension.api.model.Attachment;
+import org.bahmni.module.fhir2addlextension.api.model.Attachment;
 import org.openmrs.Obs;
 
 import java.util.List;

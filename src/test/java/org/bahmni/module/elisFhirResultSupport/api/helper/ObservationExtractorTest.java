@@ -1,7 +1,7 @@
 package org.bahmni.module.elisFhirResultSupport.api.helper;
 
 import org.bahmni.module.elisFhirResultSupport.api.domain.OrderObservations;
-import org.bahmni.module.fhir2AddlExtension.api.model.Attachment;
+import org.bahmni.module.fhir2addlextension.api.model.Attachment;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

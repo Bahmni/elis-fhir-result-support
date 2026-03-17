@@ -1,7 +1,7 @@
 package org.bahmni.module.elisFhirResultSupport.api.command.impl;
 
 import org.bahmni.module.elisFhirResultSupport.api.service.ElisFhirDiagnosticReportService;
-import org.bahmni.module.fhir2AddlExtension.api.model.FhirDiagnosticReportExt;
+import org.bahmni.module.fhir2addlextension.api.model.FhirDiagnosticReportExt;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
