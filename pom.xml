@@ -10,6 +10,27 @@
     <name>ELIS FHIR Result Support</name>
     <description>Module for creating FHIR diagnostic reports from ELIS lab results</description>
     <url>https://github.com/Bahmni/elis-fhir-result-support</url>
+    <licenses>
+        <license>
+            <name>Mozilla Public License Version 2.0 with Healthcare Disclaimer</name>
+            <url>https://www.bahmni.org/license/mplv2hd</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Bahmni</name>
+            <email>bahmnicommunity@gmail.com</email>
+            <organization>Bahmni</organization>
+            <organizationUrl>https://github.com/Bahmni</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/bahmni/elis-fhir-result-support.git</connection>
+        <developerConnection>scm:git:https://github.com/Bahmni/elis-fhir-result-support.git</developerConnection>
+        <url>https://github.com/Bahmni/elis-fhir-result-support</url>
+    </scm>
 
     <properties>
         <openmrsPlatformVersion>2.5.12</openmrsPlatformVersion>
@@ -99,6 +120,30 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
@@ -127,6 +172,27 @@
                                 <exclude>**/*Constants.class</exclude>
                             </excludes>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                <!-- Prevent gpg from using pinentry programs -->
+                    <gpgArguments>
+                        <arg>--pinentry-mode</arg>
+                        <arg>loopback</arg>
+                    </gpgArguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
