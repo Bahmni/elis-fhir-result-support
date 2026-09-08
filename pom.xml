@@ -5,7 +5,7 @@
 
     <groupId>org.bahmni.module</groupId>
     <artifactId>elis-fhir-result-support-omod</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>ELIS FHIR Result Support</name>
     <description>Module for creating FHIR diagnostic reports from ELIS lab results</description>
