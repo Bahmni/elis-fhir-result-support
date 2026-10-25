@@ -9,6 +9,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.api.OrderService;
+import org.openmrs.module.fhir2.model.FhirDiagnosticReport;
 
 import java.util.HashSet;
 import java.util.List;
@@ -79,7 +80,7 @@ public class ElisResultServiceImpl implements ELISResultPostSaveCommand {
         if (fhirDiagnosticReportExt == null) {
             return null;
         }
-        if (fhirDiagnosticReportExt.getStatusExt().equals(FhirDiagnosticReportExt.DiagnosticReportStatusExt.FINAL))
+        if (fhirDiagnosticReportExt.getStatus().equals(FhirDiagnosticReport.DiagnosticReportStatus.FINAL))
             return Order.FulfillerStatus.COMPLETED;
         return Order.FulfillerStatus.IN_PROGRESS;
     }

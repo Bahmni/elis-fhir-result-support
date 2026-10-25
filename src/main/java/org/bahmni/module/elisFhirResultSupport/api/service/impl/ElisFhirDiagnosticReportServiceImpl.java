@@ -67,16 +67,6 @@ public class ElisFhirDiagnosticReportServiceImpl implements ElisFhirDiagnosticRe
         FhirDiagnosticReport.DiagnosticReportStatus status = determineStatus(orderObservations.getResults(), order);
         report.setStatus(status);
 
-        // TODO: Remove this to use status field when OpenMRS FHIR2 Module is upgraded to >2.8.1
-        FhirDiagnosticReportExt.DiagnosticReportStatusExt statusExt;
-        try {
-            statusExt = FhirDiagnosticReportExt.DiagnosticReportStatusExt.valueOf(status.toString());
-        }
-        catch (IllegalArgumentException | NullPointerException ignored) {
-            statusExt = FhirDiagnosticReportExt.DiagnosticReportStatusExt.UNKNOWN;
-        }
-        report.setStatusExt(statusExt);
-
         logger.info("Saved FHIR diagnostic report for order {}", order.getUuid());
         return diagnosticReportDao.createOrUpdate(report);
     }
