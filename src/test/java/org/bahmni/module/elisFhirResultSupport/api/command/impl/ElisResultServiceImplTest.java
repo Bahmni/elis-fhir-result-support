@@ -33,7 +33,7 @@ public class ElisResultServiceImplTest {
         Obs obsWithOrder = mock(Obs.class);
         Obs obsWithoutOrder = mock(Obs.class);
         FhirDiagnosticReportExt mockReport = new FhirDiagnosticReportExt();
-        mockReport.setStatusExt(FhirDiagnosticReportExt.DiagnosticReportStatusExt.PRELIMINARY);
+        mockReport.setStatus(FhirDiagnosticReportExt.DiagnosticReportStatus.PRELIMINARY);
 
         when(obsWithOrder.getOrder()).thenReturn(order);
         when(obsWithoutOrder.getOrder()).thenReturn(null);
@@ -54,7 +54,7 @@ public class ElisResultServiceImplTest {
         Order order = mock(Order.class);
         Obs obs = mock(Obs.class);
         FhirDiagnosticReportExt mockReport = new FhirDiagnosticReportExt();
-        mockReport.setStatusExt(FhirDiagnosticReportExt.DiagnosticReportStatusExt.PRELIMINARY);
+        mockReport.setStatus(FhirDiagnosticReportExt.DiagnosticReportStatus.PRELIMINARY);
 
         when(obs.getOrder()).thenReturn(order);
         when(encounter.getAllObs()).thenReturn(Collections.singleton(obs));
@@ -73,7 +73,7 @@ public class ElisResultServiceImplTest {
         Order order = mock(Order.class);
         Obs obs = mock(Obs.class);
         FhirDiagnosticReportExt mockReport = new FhirDiagnosticReportExt();
-        mockReport.setStatusExt(FhirDiagnosticReportExt.DiagnosticReportStatusExt.FINAL);
+        mockReport.setStatus(FhirDiagnosticReportExt.DiagnosticReportStatus.FINAL);
 
         when(obs.getOrder()).thenReturn(order);
         when(encounter.getAllObs()).thenReturn(Collections.singleton(obs));
@@ -92,7 +92,7 @@ public class ElisResultServiceImplTest {
         Order order = mock(Order.class);
         Obs obs = mock(Obs.class);
         FhirDiagnosticReportExt mockReport = new FhirDiagnosticReportExt();
-        mockReport.setStatusExt(FhirDiagnosticReportExt.DiagnosticReportStatusExt.FINAL);
+        mockReport.setStatus(FhirDiagnosticReportExt.DiagnosticReportStatus.FINAL);
 
         when(obs.getOrder()).thenReturn(order);
         when(encounter.getAllObs()).thenReturn(Collections.singleton(obs));
@@ -112,7 +112,7 @@ public class ElisResultServiceImplTest {
         Order order = mock(Order.class);
         Obs obs = mock(Obs.class);
         FhirDiagnosticReportExt mockReport = new FhirDiagnosticReportExt();
-        mockReport.setStatusExt(FhirDiagnosticReportExt.DiagnosticReportStatusExt.PRELIMINARY);
+        mockReport.setStatus(FhirDiagnosticReportExt.DiagnosticReportStatus.PRELIMINARY);
 
         when(encounter1.getAllObs()).thenThrow(new RuntimeException("Test exception"));
         when(encounter2.getAllObs()).thenReturn(Collections.singleton(obs));

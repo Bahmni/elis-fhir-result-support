@@ -2,9 +2,10 @@ package org.bahmni.module.elisFhirResultSupport.api.helper;
 
 import org.bahmni.module.elisFhirResultSupport.api.domain.OrderObservations;
 import org.bahmni.module.fhir2addlextension.api.model.Attachment;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.MockedStatic;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.Encounter;
@@ -12,9 +13,6 @@ import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -23,14 +21,13 @@ import java.util.Set;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ Context.class })
 public class ObservationExtractorTest {
 
     private ObservationExtractor observationExtractor;
     private Order order;
     private Encounter encounter;
     private User authenticatedUser;
+    private MockedStatic<Context> contextMock;
 
     @Before
     public void setUp() {
@@ -39,9 +36,14 @@ public class ObservationExtractorTest {
         encounter = mock(Encounter.class);
         authenticatedUser = mock(User.class);
 
-        PowerMockito.mockStatic(Context.class);
-        when(Context.getLocale()).thenReturn(Locale.ENGLISH);
-        when(Context.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        contextMock = mockStatic(Context.class);
+        contextMock.when(Context::getLocale).thenReturn(Locale.ENGLISH);
+        contextMock.when(Context::getAuthenticatedUser).thenReturn(authenticatedUser);
+    }
+
+    @After
+    public void tearDown() {
+        contextMock.close();
     }
 
     @Test
